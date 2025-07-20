@@ -59,6 +59,37 @@ router.put('/:id', auth, async (req, res) => {
     }
 });
 
+// @route   PATCH /api/todos/:id
+// @desc    Edit the text of a todo
+// @access  Private
+router.patch('/:id', auth, async (req, res) => {
+    const { text } = req.body;
+
+    // Simple validation
+    if (!text) {
+        return res.status(400).json({ msg: 'Text field cannot be empty.' });
+    }
+
+    try {
+        let todo = await Todo.findById(req.params.id);
+        if (!todo) return res.status(404).json({ msg: 'Todo not found' });
+
+        // Make sure user owns the todo
+        if (todo.user.toString() !== req.user.id) {
+            return res.status(401).json({ msg: 'Not authorized' });
+        }
+
+        // Update the text
+        todo.text = text;
+
+        await todo.save();
+        res.json(todo);
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error');
+    }
+});
+
 // @route   DELETE /api/todos/:id
 // @desc    Delete a todo
 // @access  Private
