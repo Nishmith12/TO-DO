@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { toast } from 'react-toastify';
 
 const Register = () => {
     const [formData, setFormData] = useState({ username: '', email: '', password: '' });
@@ -12,8 +13,7 @@ const Register = () => {
     const onSubmit = async e => {
         e.preventDefault();
         setIsLoading(true);
-        setError('');
-        setSuccess('');
+        // We don't need local error/success states anymore
 
         try {
             const res = await fetch('/api/auth/register', {
@@ -24,10 +24,10 @@ const Register = () => {
             const data = await res.json();
             if (!res.ok) throw new Error(data.msg || 'Failed to register');
             
-            setSuccess(data.msg);
-            setFormData({ username: '', email: '', password: '' }); // Clear form on success
+            toast.success(data.msg); // Success toast
+            setFormData({ username: '', email: '', password: '' });
         } catch (err) {
-            setError(err.message);
+            toast.error(err.message); // Error toast
         } finally {
             setIsLoading(false);
         }

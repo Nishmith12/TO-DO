@@ -3,6 +3,12 @@ import Register from './components/Register';
 import Login from './components/Login';
 import Dashboard from './components/Dashboard';
 
+// --- IMPORTS FOR TOASTIFY ---
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
+import './App.css'; // Your App.css should be after toastify css
+
 function App() {
     const [token, setToken] = useState(null);
 
@@ -19,11 +25,26 @@ function App() {
     };
 
     return (
-        // Main container with a dark background, making it fill the screen height
+        // Main container
         <div className="bg-gray-900 text-white min-h-screen flex flex-col items-center justify-center">
+            {/* --- ADD THE TOAST CONTAINER HERE --- */}
+            <ToastContainer
+                position="top-right"
+                autoClose={3000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme="dark"
+            />
+
             <div className="w-full max-w-md mx-auto">
                 <h1 className="text-4xl font-bold text-center mb-8">MERN To-Do App</h1>
                 {token ? (
+                    // ... (rest of the component is the same)
                     <div>
                         <Dashboard token={token} />
                         <button 
@@ -36,10 +57,8 @@ function App() {
                 ) : (
                     <div className="bg-gray-800 p-8 rounded-lg shadow-lg w-full">
                         <div className="flex justify-around mb-6 border-b border-gray-700">
-                           {/* We can add tabs here later if needed */}
                            <h2 className="text-2xl font-bold mb-2">Login / Register</h2>
                         </div>
-                        {/* We'll simplify and show both for now */}
                         <Login setToken={setToken} />
                         <p className="text-center my-4">or</p>
                         <Register />

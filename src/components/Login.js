@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { toast } from 'react-toastify';
 
 const Login = ({ setToken }) => {
     const [formData, setFormData] = useState({ email: '', password: '' });
@@ -11,26 +12,23 @@ const Login = ({ setToken }) => {
     const onSubmit = async e => {
         e.preventDefault();
         setIsLoading(true);
-        setError('');
+        // We don't need the local error state anymore
+        // setError(''); 
 
         try {
             const res = await fetch('/api/auth/login', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(formData), // This sends the email and password
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(formData),
             });
-
             const data = await res.json();
-            if (!res.ok) {
-                throw new Error(data.msg || 'Failed to login');
-            }
+            if (!res.ok) throw new Error(data.msg || 'Failed to login');
             
+            toast.success("Welcome back!"); // Success toast
             localStorage.setItem('token', data.token);
             setToken(data.token);
         } catch (err) {
-            setError(err.message);
+            toast.error(err.message); // Error toast
         } finally {
             setIsLoading(false);
         }
